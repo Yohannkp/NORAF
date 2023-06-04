@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "228493690274",
+    "project_id": "noraf-ba452",
+    "storage_bucket": "noraf-ba452.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228493690274:android:b67c2a5389e874503b9efb",
+        "android_client_info": {
+          "package_name": "com.fodio_aharh.noraf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228493690274-q0l8jmg358a454vp9ub93v7tei620hsj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtAczFD6wwxZ-sYWA3O7HSv_kBkByC1sY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228493690274-q0l8jmg358a454vp9ub93v7tei620hsj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228493690274:android:1f90cd7e1f2390aa3b9efb",
+        "android_client_info": {
+          "package_name": "com.fodio_aharh.ppe302"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228493690274-q0l8jmg358a454vp9ub93v7tei620hsj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtAczFD6wwxZ-sYWA3O7HSv_kBkByC1sY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228493690274-q0l8jmg358a454vp9ub93v7tei620hsj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
