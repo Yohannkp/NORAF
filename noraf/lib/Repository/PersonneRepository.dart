@@ -50,14 +50,14 @@ return path;
 Future<Personne?> readOnlineUser() async {
 
  //print("Nous recherchon l'utilisarteur : "+_auth.currentUser!.uid);
- print("id de l'utilisateur connecté : "+_auth.currentUser!.uid);
+
  final docUser = FirebaseFirestore.instance.collection("Personne").doc(_auth.currentUser!.uid);
  final snapshot = await docUser.get();
 
  if(snapshot.exists)
  {
   final nomnre = Personne.fromJson(snapshot.data()!);
-  print("Nom : "+nomnre.nom);
+
   return Personne.fromJson(snapshot.data()!);
  }
 
@@ -65,5 +65,7 @@ Future<Personne?> readOnlineUser() async {
 
 
 }
+
+
 
 }

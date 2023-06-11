@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:noraf/Page/Acceuil.dart';
 import 'package:noraf/Page/Form.dart';
 import 'package:noraf/Repository/AuthentificationService.dart';
 
@@ -16,7 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   // Variables pour stocker les valeurs du formulaire
   String _email = '';
   String _motDePasse = '';
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,12 +75,17 @@ class _LoginFormState extends State<LoginForm> {
                       loading = false;
                     });
 
+                    startTimer(_auth, context);
+
+
                     if(request == null){
                       print("Erreur lors de la connexion");
                       setState(() {
                         loading = true;
                         error = "Erreur lors de la connexion";
                       });
+
+
                     }
                     }
                 },
@@ -98,4 +107,20 @@ void main() {
   runApp(MaterialApp(
     home: LoginForm(),
   ));
+}
+
+
+void startTimer(_auth,context) {
+  const duration = Duration(seconds: 5);
+
+  Timer(duration, () {
+    // Code à exécuter après la durée spécifiée (5 secondes)
+    if(_auth.currentUser?.uid != null)
+    {
+
+
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Acceuil()));
+    }
+  });
 }

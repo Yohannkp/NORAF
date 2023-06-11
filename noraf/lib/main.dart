@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:noraf/Page/Acceuil.dart';
 import 'package:provider/provider.dart';
 import 'package:async/async.dart';
 import 'Page/Splashscreen.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       value: AuthentificationService().user,
       initialData: null,
       child: MaterialApp(
-        home: Splashscreen(),
+        home: Acceuil(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData
           (

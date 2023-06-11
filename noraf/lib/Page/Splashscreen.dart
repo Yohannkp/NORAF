@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:noraf/Model/Personne.dart';
+import 'package:noraf/Page/Acceuil.dart';
 import 'package:noraf/Page/Form.dart';
 import 'package:noraf/Page/connexion.dart';
 import 'package:noraf/Repository/AuthentificationService.dart';
@@ -31,7 +32,7 @@ class Splashscreen extends StatelessWidget {
       return FutureBuilder(future: pr.readOnlineUser(),
           builder: (context,snapshot){
             if(snapshot.connectionState == ConnectionState.done){
-              print(snapshot.data?.uid);
+
 
                 if(snapshot.data?.role == "admin"){
                   return Scaffold(
@@ -43,14 +44,7 @@ class Splashscreen extends StatelessWidget {
                     ),
                   );
                 }if(snapshot.data?.role == "user"){
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: Text("Page utilisateur"),
-                      actions: [ElevatedButton(onPressed: (){
-                        _auth.signOut();
-                      }, child: Text("log out"))],
-                    ),
-                  );
+                  return Acceuil();
               }
 
               return Center();
