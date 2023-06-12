@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:noraf/Model/Personne.dart';
 import 'package:noraf/Page/BottomNavBar/Acceuil.dart';
 
@@ -7,9 +8,12 @@ import 'package:noraf/Page/BottomNavBar/Reservation.dart';
 import 'package:noraf/Page/BottomNavBar/Settings.dart';
 import 'package:noraf/Page/Recherche.dart';
 import 'package:noraf/Page/connexion.dart';
+import 'package:noraf/Page/no_connexion.dart';
 import 'package:noraf/Repository/AuthentificationService.dart';
 import 'package:noraf/Repository/PersonneRepository.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:provider/provider.dart';
+import '../Model/user.dart';
 import 'Form.dart';
 
 class Acceuil extends StatefulWidget {
@@ -54,9 +58,33 @@ class _AcceuilState extends State<Acceuil> {
       return null;
     }
   }
+
+
+
+
+
+  bool internet = true;
+
+  void ConnexionChecker() async{
+    bool result = await InternetConnectionCheckerPlus().hasConnection;
+    if(result == true) {
+      setState(() {
+        //internet = true;
+      });
+    } else {
+      setState(() {
+        //internet = false;
+      });
+    }
+  }
+
+
+
+
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    ConnexionChecker();
+    return internet == true?Scaffold(
 
       appBar: AppBar(
         title: page==0?Text("Home"):page==5?Text("Recherche"):page==1?Text("Reservation"):page==2?Text("Setting"):Text(""),
@@ -99,6 +127,8 @@ class _AcceuilState extends State<Acceuil> {
         Icon(Icons.bed,color: Colors.white,),
           Icon(Icons.settings,color: Colors.white,)
       ],),
+    ) : Scaffold(
+      body: no_connexion(),
     );
   }
 }

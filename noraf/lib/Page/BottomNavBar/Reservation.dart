@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:noraf/Repository/PersonneRepository.dart';
 import 'package:noraf/Repository/logementRepository.dart';
@@ -28,40 +29,47 @@ Widget Reservation() {
                       children: [
                         InkWell(
                           child: Card(
-                            elevation: 5,
+                            elevation: 3,
 
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20)
-                                  ),
-                                  width: MediaQuery.of(context).size.width*0.9,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.9,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
 
-                                  child: Column(
                                     children: [
-                                      Container(
-
-                                        width: MediaQuery.of(context).size.width,
-                                        height : 80,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text("Nom de la region : ${logements[index].region}"),
-                                            Text("Coordonnées : ${logements[index].coordonnees}")
-                                          ],
-                                        ),
-                                      ),
-
-
-
-
+                                      Icon(Icons.image,size: 150,)
                                     ],
                                   ),
-                                ),
-                              ],
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("${logements[index].titre}"),
+                                      Text("${logements[index].region}"),
+                                      Text("${logements[index].address}"),
+                                      SizedBox(height: 30,),
+                                      Text("${logements[index].prix} FCFA")
+                                    ],
+                                  ),
+                                  Column(
+
+                                    children: [
+                                      Icon(CupertinoIcons.suit_heart_fill,color: Colors.red,),
+                                      SizedBox(
+                                        height: 55,
+                                      ),
+
+                                      Icon(Icons.star,size: 15,color: CupertinoColors.activeOrange,),
+                                      SizedBox(
+                                        width: 80,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
+
                           ),
                           onTap: (){
                             print("Touché container numero : "+index.toString());
