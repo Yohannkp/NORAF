@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.fodio_aharh" "\0"
-            VALUE "FileDescription", "noraf" "\0"
+            VALUE "CompanyName", "com.noraf.dernier" "\0"
+            VALUE "FileDescription", "derniernoraf" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "noraf" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.fodio_aharh. All rights reserved." "\0"
-            VALUE "OriginalFilename", "noraf.exe" "\0"
-            VALUE "ProductName", "noraf" "\0"
+            VALUE "InternalName", "derniernoraf" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.noraf.dernier. All rights reserved." "\0"
+            VALUE "OriginalFilename", "derniernoraf.exe" "\0"
+            VALUE "ProductName", "derniernoraf" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

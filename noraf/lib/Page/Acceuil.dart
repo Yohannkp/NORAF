@@ -1,20 +1,26 @@
+import 'dart:async';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:noraf/Model/Personne.dart';
-import 'package:noraf/Page/BottomNavBar/Acceuil.dart';
+import 'package:lottie/lottie.dart';
 
-import 'package:noraf/Page/BottomNavBar/Reservation.dart';
-import 'package:noraf/Page/BottomNavBar/Settings.dart';
-import 'package:noraf/Page/Recherche.dart';
-import 'package:noraf/Page/connexion.dart';
-import 'package:noraf/Page/no_connexion.dart';
-import 'package:noraf/Repository/AuthentificationService.dart';
-import 'package:noraf/Repository/PersonneRepository.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
+import '../Model/Personne.dart';
 import '../Model/user.dart';
-import 'Form.dart';
+import '../Repository/AuthentificationService.dart';
+import '../Repository/PersonneRepository.dart';
+import 'BottomNavBar/EvenementPage.dart';
+import 'BottomNavBar/Reservation.dart';
+import 'BottomNavBar/Settings.dart';
+import 'Drawer/Drawer.dart';
+import 'Reservation/ListeReservation.dart';
+import 'Reservation/detailsReservation.dart';
+import 'no_connexion.dart';
 
 class Acceuil extends StatefulWidget {
   const Acceuil({super.key});
@@ -31,10 +37,13 @@ class _AcceuilState extends State<Acceuil> {
   String nom = "";
   int page = 0;
   TextEditingController _textEditingController = TextEditingController();
+  late PageController _pageController;
+
 
 
   @override
   void initState(){
+    _pageController = PageController();
     // TODO: implement initState
     super.initState();
     onlineuser();
@@ -67,26 +76,36 @@ class _AcceuilState extends State<Acceuil> {
 
   void ConnexionChecker() async{
     bool result = await InternetConnectionCheckerPlus().hasConnection;
-    if(result == true) {
-      setState(() {
-        //internet = true;
-      });
-    } else {
-      setState(() {
-        //internet = false;
-      });
-    }
+
   }
 
-
-
-
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _pageController.dispose();
+    super.dispose();
+  }
+  bool loadings = false;
   @override
   Widget build(BuildContext context){
     ConnexionChecker();
+
+    final drawercontroller = ZoomDrawerController();
+    void startTimer() {
+      const duration = Duration(seconds: 2);
+
+      Timer(duration, () {
+        // Code à exécuter après la durée spécifiée (5 secondes)
+        setState(() {
+          loadings = false;
+        });
+      });
+    };
+
+    startTimer();
     return internet == true?Scaffold(
 
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: page==0?Text("Home"):page==5?Text("Recherche"):page==1?Text("Reservation"):page==2?Text("Setting"):Text(""),
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -96,37 +115,70 @@ class _AcceuilState extends State<Acceuil> {
 
           }, child: Icon(Icons.search))
         ],
-      ),
-      body: FutureBuilder(future: onlineuser(),
-          builder: (context,snapshot){
+      ),*/
+      body: loadings==true?Center(child: Container(
+          width: MediaQuery.of(context).size.width/2,
+
+          child: Lottie.asset("lib/assets/IJK8ydzR2E.json")),):ZoomDrawer(
+
+        showShadow: true,
+        style: DrawerStyle.defaultStyle,
+        menuBackgroundColor: Colors.grey,
+        menuScreen: CustumDrawer(drawercontroller),
+        mainScreen: FutureBuilder(future: onlineuser(),
+            builder: (context,snapshot){
 
               if(page == 0){
-                return Acceuil_nav_bar();
+                return ReservationClass();
               }else if(page == 1){
-                return Reservation();
+                return EvenementPage();
               }else if(page == 2){
-                return Settings(connected,context);
+                return listeReservation();
+              }else if(page == 3){
+                return Settings();
               }
               return Center(child: Text("User off-line"),);
             }
 
-          ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.white,
+        ),
+        controller: drawercontroller,
 
-        color: Colors.blue,
-        animationDuration: Duration(milliseconds: 200),
-        onTap: (index){
-            print(index);
-            setState(() {
-              page = index;
-            });
-        },
-        items: [
-        Icon(Icons.home,color: Colors.white,),
-        Icon(Icons.bed,color: Colors.white,),
-          Icon(Icons.settings,color: Colors.white,)
-      ],),
+      ),
+
+        bottomNavigationBar: BottomNavyBar(
+          selectedIndex: page,
+          showElevation: true, // use this to remove appBar's elevation
+          onItemSelected: (index) => setState(() {
+            page = index;
+            if(_pageController.hasClients){
+              _pageController.animateToPage(index,
+                  duration: Duration(milliseconds: 200), curve: Curves.ease);
+            }
+
+          }),
+          items: [
+            BottomNavyBarItem(
+              icon: Icon(Icons.home),
+              title: Text('Acceuil'),
+              activeColor: Colors.red,
+            ),
+            BottomNavyBarItem(
+                icon: Icon(Icons.map),
+                title: Text('Evènements'),
+                activeColor: Colors.red
+            ),
+            BottomNavyBarItem(
+                icon: Icon(Icons.bed),
+                title: Text('Reservation'),
+                activeColor: Colors.red
+            ),
+            BottomNavyBarItem(
+                icon: Icon(Icons.settings),
+                title: Text('Settings'),
+                activeColor: Colors.red
+            ),
+          ],
+        )
     ) : Scaffold(
       body: no_connexion(),
     );

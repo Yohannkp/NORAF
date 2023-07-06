@@ -3,11 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:noraf/Model/logement.dart';
+import 'package:flashtoast/flash_toast.dart';
+import 'package:flutter/material.dart';
+
 import 'package:path/path.dart' as Path;
+
+import '../Model/logement.dart';
+import '../Page/logement/AjoutImagesLogement.dart';
 class logementRepository{
 
-readlogement(logement Logement) async
+Future<logement?>readlogement(logement Logement) async
 {final doclogement = FirebaseFirestore.instance.collection('logement').doc(Logement?.uid);
 final snapshot = await doclogement.get();if(snapshot.exists){
 return logement.fromJson(snapshot.data()!);
@@ -15,6 +20,7 @@ return logement.fromJson(snapshot.data()!);
 
 Stream<List<logement>> readAlllogement()=>FirebaseFirestore.instance.collection('logement').snapshots().map((snapshot) => snapshot.docs.map((doc) =>logement.fromJson(doc.data())).toList());
 
+Stream<List<logement>> readAllofMyogement(String? _auth)=>FirebaseFirestore.instance.collection('logement').where("id_porprietaire",isEqualTo: _auth).snapshots().map((snapshot) => snapshot.docs.map((doc) =>logement.fromJson(doc.data())).toList());
 
 Future Updatelogement(logement logement) async{
 
@@ -22,7 +28,7 @@ Future Updatelogement(logement logement) async{
 final doclogement = FirebaseFirestore.instance.collection('logement').doc(logement.uid);
 
 
- doclogement.update({'id_logement' : logement.id_logement,'image' : logement.image,'description' : logement.description,'titre' : logement.titre,'address' : logement.address,'prix' : logement.prix,'region' : logement.region,'options' : logement.options,'coordonnees' : logement.coordonnees,'statut' : logement.statut,});
+ doclogement.update({'image' : logement.image,'description' : logement.description,'titre' : logement.titre,'address' : logement.address,'prix' : logement.prix,'region' : logement.region,'options' : logement.options,'coordonnees' : logement.coordonnees,'statut' : logement.statut,});
 
 }
 
@@ -31,6 +37,71 @@ deletelogement(logement logement) async {
 final doclogement = FirebaseFirestore.instance.collection('logement').doc(logement.uid);
  doclogement.delete();
 }
+
+Future<String?> uploadImage(File file,{required String path, required logement log , required context})async{
+ final ext = Path.basename(file.path).split(".").last;
+ var time = DateTime.now();
+ String image = path+"_"+Path.basename(file.path).split(".")[0].toString()+time.toString()+"."+ext;
+ String? urlimage = path+"/"+image;
+
+ try {
+   final ref = FirebaseStorage.instance.ref().child(path+"/").child(image);
+   UploadTask uploadTask = ref.putFile(file);
+   uploadTask.then((p0) async{
+    final link = await p0.ref.getDownloadURL();
+    log.image = link;
+    logementRepository lr = new logementRepository();
+    final pathlogsearch = await lr.Ajoutlogement(log);
+    logement? imgsearch = await lr.readlogement(logement(id_porprietaire: "id_porprietaire", uid: pathlogsearch!, id_logement: "id_logement", image: "image", description: "description", titre: "titre", address: "address", prix: "500", region: "region", options: "options", coordonnees: "coordonnees", statut: "statut"));
+
+    Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (context) => AjoutImagelogement(log: imgsearch!,)));
+    print(link);
+
+    return link;
+   });
+ } on Exception catch (e) {
+   // TODO
+
+  return null;
+ }
+
+}
+
+Future<String?> updateImage(File file,{required String path, required logement log, required context ,required String type})async{
+ final ext = Path.basename(file.path).split(".").last;
+ var time = DateTime.now();
+ String image = path+"_"+Path.basename(file.path).split(".")[0].toString()+time.toString()+"."+ext;
+ String? urlimage = path+"/"+image;
+
+ try {
+  final ref = FirebaseStorage.instance.ref().child(path+"/").child(image);
+  UploadTask uploadTask = ref.putFile(file);
+  uploadTask.then((p0) async{
+   final link = await p0.ref.getDownloadURL();
+   log.image = link;
+   logementRepository lr = new logementRepository();
+   lr.Updatelogement(log);
+   print(link);
+   Navigator.pop(context);
+   if(type == "logement"){
+    FlashToast.showFlashToast(context: context, title: "Succes", message: "Votre logement à bien été mis à jour", flashType: FlashType.success,flashPosition: FlashPosition.top);
+   }else{
+    FlashToast.showFlashToast(context: context, title: "Succes", message: "Votre image à bien été mis à jour", flashType: FlashType.success,flashPosition: FlashPosition.top);
+   }
+
+
+   return link;
+  });
+ } on Exception catch (e) {
+  // TODO
+
+  return null;
+ }
+
+}
+
+
 
 
 Future<String?> Ajoutlogement(logement logement) async{
@@ -80,7 +151,7 @@ List<logement> searchPeople(List<logement> list, String searchQuery) {
 
   // Vous pouvez ajuster cette valeur pour déterminer la tolérance de correspondance
   // Plus la valeur est basse, plus la correspondance doit être proche
-  int threshold = 5;
+  int threshold = 7;
 
   if (distance <= threshold) {
    results.add(log);
